@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALL PAYMENT ANDRA</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  
+  :root {
+    /* Tema Default (Cyan Neon) */
+    --primary: #00ffff;
+    --secondary: #0088ff;
+    --glow: rgba(0, 255, 255, 0.4);
+    --bg: #060914;
+    --card-bg: rgba(10, 15, 30, 0.75);
+    --text: #ffffff;
+    --muted: #8899bb;
+    --red: #ff3b3b;
+  }
+
+  /* Tema Alternatif */
+  body.theme-purple {
+    --primary: #d500ff;
+    --secondary: #ff007f;
+    --glow: rgba(213, 0, 255, 0.4);
+    --bg: #0a0512;
+    --card-bg: rgba(20, 10, 30, 0.75);
+  }
+  body.theme-red {
+    --primary: #ff003c;
+    --secondary: #ff8c00;
+    --glow: rgba(255, 0, 60, 0.4);
+    --bg: #100505;
+    --card-bg: rgba(30, 10, 10, 0.75);
+  }
+  body.theme-green {
+    --primary: #00ff66;
+    --secondary: #00bfff;
+    --glow: rgba(0, 255, 102, 0.4);
+    --bg: #051008;
+    --card-bg: rgba(10, 30, 15, 0.75);
+  }
+
+  body {
+    background-color: var(--bg);
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      radial-gradient(circle at 50% 0%, var(--glow) 0%, transparent 60%);
+    background-size: 40px 40px, 40px 40px, 100% 100%;
+    background-attachment: fixed;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 30px 16px 80px;
+    overflow-x: hidden;
+    transition: background 0.5s ease;
+  }
+
+  .wrapper { width: 100%; max-width: 800px; position: relative; z-index: 10; }
+
+  /* THEME SWITCHER */
+  .theme-switcher {
+    position: fixed; top: 20px; right: 20px;
+    display: flex; gap: 10px;
+    background: rgba(0,0,0,0.5);
+    padding: 10px; border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+  }
+  .color-btn {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 2px solid transparent; cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .color-btn:hover { transform: scale(1.15); }
+  .color-btn.active { border-color: #fff; transform: scale(1.1); }
+  .cb-cyan { background: linear-gradient(135deg, #00ffff, #0088ff); }
+  .cb-purple { background: linear-gradient(135deg, #d500ff, #ff007f); }
+  .cb-red { background: linear-gradient(135deg, #ff003c, #ff8c00); }
+  .cb-green { background: linear-gradient(135deg, #00ff66, #00bfff); }
+
+  /* HERO & ROBOT */
+  .hero { text-align: center; margin-bottom: 40px; position: relative; }
+  
+  .robot-container {
+    width: 140px; height: 140px;
+    margin: 0 auto 15px;
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+    cursor: grab;
+    display: inline-block;
+  }
+  .robot-container:active { cursor: grabbing; }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+
+  .robot-svg {
+    width: 100%; height: 100%;
+    filter: drop-shadow(0 0 15px var(--primary));
+    transition: filter 0.5s ease;
+  }
+  .robot-svg path, .robot-svg rect, .robot-svg circle {
+    fill: transparent;
+    stroke: var(--primary);
+    stroke-width: 4;
+    transition: stroke 0.5s ease;
+  }
+  .robot-eye {
+    fill: var(--primary) !important;
+    stroke: none !important;
+    animation: blink 4s infinite;
+  }
+  @keyframes blink {
+    0%, 96%, 100% { transform: scaleY(1); }
+    98% { transform: scaleY(0.1); }
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 3rem); font-weight: 900; letter-spacing: 3px; line-height: 1.1;
+    background: linear-gradient(90deg, #fff, var(--primary), var(--secondary), #fff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 30px var(--glow);
+    margin-bottom: 10px;
+    transition: all 0.5s ease;
+  }
+  .hero p.sub {
+    font-size: 0.9rem; letter-spacing: 5px; color: var(--primary);
+    text-transform: uppercase; font-weight: 800;
+    text-shadow: 0 0 10px var(--glow);
+  }
+
+  /* AUDIO PLAYER CUSTOM */
+  .audio-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--primary);
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 30px;
+    box-shadow: 0 0 20px var(--glow), inset 0 0 15px rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    transition: all 0.5s ease;
+  }
+  audio { 
+    width: 100%; height: 45px; outline: none; 
+    border-radius: 50px;
+    filter: invert(1) hue-rotate(180deg) contrast(1.5);
+  }
+
+  /* CARD 3D */
+  .card3d {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-left: 5px solid var(--primary);
+    border-radius: 8px;
+    padding: 30px 24px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(15px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.02);
+    transition: all 0.4s ease;
+  }
+  .card3d:hover {
+    border-left-color: var(--secondary);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.8), inset 0 0 30px var(--glow);
+    transform: translateY(-3px);
+  }
+
+  .card3d h2 {
+    font-size: 1.2rem; font-weight: 900; letter-spacing: 2px;
+    display: flex; align-items: center; gap: 12px;
+    color: #fff; margin-bottom: 24px; text-transform: uppercase;
+    text-shadow: 0 0 10px var(--glow);
+  }
+  .card3d h2 .icon {
+    color: var(--primary);
+    text-shadow: 0 0 15px var(--primary);
+  }
+
+  /* PAYMENT LAYOUT */
+  .payment-wrap { display: flex; flex-direction: column; gap: 20px; }
+  
+  .qr-container {
+    text-align: center;
+    background: rgba(0,0,0,0.4);
+    border: 1px dashed var(--primary);
+    border-radius: 12px; padding: 24px;
+  }
+  .qr-container img {
+    width: 100%; max-width: 250px; border-radius: 8px;
+    border: 2px solid var(--glow);
+    box-shadow: 0 0 20px var(--glow);
+    margin-bottom: 15px;
+  }
+
+  .pay-detail { display: flex; flex-direction: column; gap: 16px; }
+  .pay-item {
+    background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px; padding: 18px;
+    transition: all 0.3s;
+  }
+  .pay-item:hover { border-color: var(--primary); background: rgba(255,255,255,0.05); }
+  .pay-item .pk { font-size: 0.85rem; letter-spacing: 2px; color: var(--primary); margin-bottom: 6px; font-weight: 900; }
+  .pay-item .pname { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; font-weight: bold; }
+  .pay-item .pv-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .pay-item .pv { font-size: 1.2rem; font-weight: 900; color: #fff; font-family: monospace; letter-spacing: 1px; }
+  
+  .copy-btn {
+    background: transparent; color: var(--primary); border: 1px solid var(--primary);
+    border-radius: 6px; padding: 8px 16px; font-size: 0.8rem; font-weight: 900;
+    cursor: pointer; transition: all 0.2s; letter-spacing: 1px;
+  }
+  .copy-btn:hover { background: var(--primary); color: #000; box-shadow: 0 0 15px var(--primary); }
+
+  /* WARNING NOTE */
+  .warning-box {
+    background: rgba(255, 59, 59, 0.1);
+    border: 1px solid var(--red);
+    border-radius: 8px;
+    padding: 18px;
+    text-align: center;
+    color: #ffcccc;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    box-shadow: 0 0 15px rgba(255, 59, 59, 0.3);
+    margin-top: 5px;
+  }
+
+  /* CTA BUTTON */
+  .cta {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 16px 40px;
+    font-size: 1rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; text-decoration: none;
+    color: #000;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border: none; border-radius: 6px;
+    box-shadow: 0 0 20px var(--glow);
+    transition: all 0.2s;
+    cursor: pointer;
+    width: 100%;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  }
+  .cta:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 30px var(--primary);
+  }
+
+  /* CONTACT GRID */
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 15px; }
+  .contact-btn {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 18px; text-decoration: none; color: var(--primary);
+    background: rgba(0,0,0,0.4); border: 1px solid var(--glow);
+    border-radius: 8px; transition: all 0.3s;
+  }
+  .contact-btn:hover { background: var(--glow); box-shadow: 0 0 20px var(--glow); border-color: var(--primary); }
+  .contact-btn .c-label { font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 6px; opacity: 0.8; color: #fff; font-weight: bold;}
+  .contact-btn .c-value { font-size: 1.05rem; font-weight: 900; }
+
+  .footer { text-align: center; margin-top: 40px; font-size: 0.75rem; letter-spacing: 3px; color: var(--muted); font-weight: bold; }
+
+  @media(max-width: 600px) {
+    .contact-grid { grid-template-columns: 1fr; }
+    .card3d { padding: 20px 16px; }
+    .theme-switcher { top: 10px; right: 10px; padding: 8px; }
+    .color-btn { width: 20px; height: 20px; }
+  }
+</style>
+</head>
+<body class="theme-cyan">
+
+<!-- Theme Switcher -->
+<div class="theme-switcher">
+  <button class="color-btn cb-cyan active" onclick="setTheme('theme-cyan', this)" title="Cyan Neon"></button>
+  <button class="color-btn cb-purple" onclick="setTheme('theme-purple', this)" title="Purple Neon"></button>
+  <button class="color-btn cb-red" onclick="setTheme('theme-red', this)" title="Red Neon"></button>
+  <button class="color-btn cb-green" onclick="setTheme('theme-green', this)" title="Green Neon"></button>
+</div>
+
+<div class="wrapper">
+
+  <!-- HERO -->
+  <div class="hero">
+    <!-- ROBOT DRAG -->
+    <div class="robot-container" id="drag-robot">
+      <svg class="robot-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 15 L50 25" stroke-linecap="round"/>
+        <circle cx="50" cy="12" r="4" class="robot-eye"/>
+        <rect x="25" y="25" width="50" height="40" rx="10" />
+        <circle cx="38" cy="45" r="5" class="robot-eye"/>
+        <circle cx="62" cy="45" r="5" class="robot-eye"/>
+        <path d="M40 55 L60 55" stroke-linecap="round"/>
+        <rect x="35" y="70" width="30" height="20" rx="5" />
+        <path d="M25 45 L15 55" stroke-linecap="round"/>
+        <path d="M75 45 L85 55" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <h1>ALL PAYMENT ANDRA</h1>
+    <p class="sub">Secure Transaction</p>
+    
+    <!-- AUDIO TOP -->
+    <div class="audio-wrap">
+      <audio controls loop>
+        <source src="https://files.catbox.moe/xj79b8.m4a" type="audio/mp4">
+        Browser kamu tidak mendukung audio.
+      </audio>
+    </div>
+  </div>
+
+  <!-- PAYMENT SECTION -->
+  <div class="card3d">
+    <h2><span class="icon">💳</span> METODE PEMBAYARAN</h2>
+    <div class="payment-wrap">
+      
+      <!-- QRIS -->
+      <div class="qr-container">
+        <img src="https://files.catbox.moe/1wqdhl.jpg" alt="QRIS Andra">
+        <br>
+        <a href="https://files.catbox.moe/1wqdhl.jpg" download="QRIS_Andra.jpg" class="cta" style="padding: 12px 20px; font-size: 0.9rem;">⬇ DOWNLOAD QRIS</a>
+      </div>
+
+      <!-- DANA & GOPAY -->
+      <div class="pay-detail">
+        <div class="pay-item">
+          <div class="pk">💰 DANA</div>
+          <div class="pname">a.n RUMIYATI</div>
+          <div class="pv-row">
+            <div class="pv" id="dana-num">085882573701</div>
+            <button class="copy-btn" onclick="copyText('dana-num', this)">SALIN</button>
+          </div>
+        </div>
+        <div class="pay-item">
+          <div class="pk">💰 GOPAY</div>
+          <div class="pname">a.n DIANDRA</div>
+          <div class="pv-row">
+            <div class="pv" id="gopay-num">085882573701</div>
+            <button class="copy-btn" onclick="copyText('gopay-num', this)">SALIN</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- WARNING CATATAN -->
+      <div class="warning-box">
+        ⚠️ CATATAN : JANGAN LUPA SIMPAN & BAWA BUKTI TRANSFER AGAR PESANAN KAMU SEGERA DIPROSES
+      </div>
+
+    </div>
+  </div>
+
+  <!-- CONTACT & CONFIRMATION -->
+  <div class="card3d">
+    <h2><span class="icon">📡</span> KONFIRMASI PESANAN</h2>
+    <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 15px; text-align: center;">Jika sudah transfer, silakan klik tombol di bawah ini:</p>
+    
+    <div class="contact-grid">
+      <!-- WhatsApp Link with pre-filled text -->
+      <a href="https://wa.me/6285941844119?text=HALO%20BANG%20ANDRA%20AKU%20SUDAH%20TF%20SESUAI%20NOMINAL" target="_blank" rel="noopener" class="contact-btn">
+        <span class="c-label">VIA WHATSAPP</span>
+        <span class="c-value">+62 859-4184-4119</span>
+      </a>
+      
+      <!-- Telegram Link (Using share URL to pre-fill if possible) -->
+      <a href="https://t.me/andrasukablonde" target="_blank" rel="noopener" class="contact-btn">
+        <span class="c-label">VIA TELEGRAM</span>
+        <span class="c-value">@andrasukablonde</span>
+      </a>
+    </div>
+
+    <div style="margin-top: 20px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border: 1px dashed rgba(255,255,255,0.2); text-align: center;">
+      <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 8px;">Pesan otomatis WhatsApp:</p>
+      <div style="font-weight: 900; color: var(--primary); font-size: 1rem; letter-spacing: 1px;">"HALO BANG ANDRA AKU SUDAH TF SESUAI NOMINAL"</div>
+      <button class="copy-btn" style="margin-top: 10px; font-size: 0.75rem; padding: 6px 12px;" onclick="copyPesan(this)">SALIN PESAN</button>
+    </div>
+  </div>
+
+  <div class="footer">ALL PAYMENT ANDRA • SYSTEM SECURE</div>
+</div>
+
+<script>
+  // 1. Fitur Ganti Tema Warna
+  function setTheme(themeClass, btn) {
+    document.body.className = '';
+    document.body.classList.add(themeClass);
+    
+    const btns = document.querySelectorAll('.color-btn');
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  // 2. Fitur Salin Teks (Nomor & Pesan)
+  function copyText(elementId, btn) {
+    const textToCopy = document.getElementById(elementId).innerText;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      const originalText = btn.innerText;
+      btn.innerText = 'COPIED ✅';
+      btn.style.background = 'var(--primary)';
+      btn.style.color = '#000';
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--primary)';
+      }, 2000);
+    }).catch(err => {
+      alert('Gagal menyalin: ' + err);
+    });
+  }
+
+  function copyPesan(btn) {
+    const textToCopy = "HALO BANG ANDRA AKU SUDAH TF SESUAI NOMINAL";
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      const originalText = btn.innerText;
+      btn.innerText = 'COPIED ✅';
+      btn.style.background = 'var(--primary)';
+      btn.style.color = '#000';
+      setTimeout(() => {
+        btn.innerText = originalText;
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--primary)';
+      }, 2000);
+    });
+  }
+
+  // 3. Fitur Robot Bisa Digerakan (Drag & Drop)
+  const robot = document.getElementById('drag-robot');
+  let isDragging = false;
+  let offsetX, offsetY;
+
+  // Mouse Events
+  robot.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    robot.style.animation = 'none'; 
+    offsetX = e.clientX - robot.getBoundingClientRect().left;
+    offsetY = e.clientY - robot.getBoundingClientRect().top;
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    moveRobot(e.clientX, e.clientY);
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      robot.style.animation = 'float 3s ease-in-out infinite'; 
+      robot.style.position = 'relative'; 
+      robot.style.left = '0px';
+      robot.style.top = '0px';
+    }
+  });
+
+  // Touch Events (Mobile)
+  robot.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    robot.style.animation = 'none';
+    const touch = e.touches[0];
+    offsetX = touch.clientX - robot.getBoundingClientRect().left;
+    offsetY = touch.clientY - robot.getBoundingClientRect().top;
+  });
+
+  document.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    moveRobot(touch.clientX, touch.clientY);
+    e.preventDefault(); 
+  }, { passive: false });
+
+  document.addEventListener('touchend', () => {
+    if (isDragging) {
+      isDragging = false;
+      robot.style.animation = 'float 3s ease-in-out infinite';
+      robot.style.position = 'relative';
+      robot.style.left = '0px';
+      robot.style.top = '0px';
+    }
+  });
+
+  function moveRobot(clientX, clientY) {
+    robot.style.position = 'fixed';
+    robot.style.left = (clientX - offsetX) + 'px';
+    robot.style.top = (clientY - offsetY) + 'px';
+  }
+</script>
+</body>
+</html>
